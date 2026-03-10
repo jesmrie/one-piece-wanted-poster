@@ -18,11 +18,17 @@ const NAME_AREA = {
 }
 
 
+// Format name: uppercase + replace spaces with bullet •
+function formatPirateName(name) {
+  return (name || 'YOUR NAME HERE').toUpperCase().replace(/\s+/g, '•')
+}
+
 export default function WantedPoster({
   photo,
   photoPosition,
   onPhotoPositionChange,
   pirateName,
+  nameScale = 1.0,
   appState,
 }) {
   const photoAreaRef = useRef(null)
@@ -113,7 +119,7 @@ export default function WantedPoster({
     >
       {/* Layer 1: Frame image (base) */}
       <img
-        src="/wanted-poster-frame.png"
+        src="/images/wanted-poster-frame.png"
         alt="Wanted poster frame"
         className="absolute inset-0 w-full h-full pointer-events-none"
         draggable={false}
@@ -170,9 +176,18 @@ export default function WantedPoster({
         )}
       </div>
 
-      {/* Layer 3: Name text overlay */}
+      {/* Layer 3: Texture overlay with darken blend mode */}
+      <img
+        src="/images/texture-layer.png"
+        alt=""
+        className="absolute inset-0 w-full h-full pointer-events-none z-15"
+        style={{ mixBlendMode: 'darken' }}
+        draggable={false}
+      />
+
+      {/* Layer 4: Name text overlay */}
       <div
-        className="absolute flex items-center justify-center pointer-events-none z-20"
+        className="absolute flex items-center justify-center pointer-events-none z-30"
         style={{
           top: `${NAME_AREA.top}%`,
           left: `${NAME_AREA.left}%`,
@@ -183,10 +198,10 @@ export default function WantedPoster({
         <span
           className="poster-name text-center leading-none w-full block truncate px-2"
           style={{
-            fontSize: 'clamp(0.7rem, 3.5vw, 1.8rem)',
+            fontSize: `clamp(${0.7 * nameScale}rem, ${3.5 * nameScale}vw, ${1.8 * nameScale}rem)`,
           }}
         >
-          {pirateName || 'YOUR NAME HERE'}
+          {formatPirateName(pirateName)}
         </span>
       </div>
 

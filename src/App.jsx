@@ -15,6 +15,7 @@ function App() {
   const [photo, setPhoto] = useState(null)
   const [photoPosition, setPhotoPosition] = useState({ x: 0, y: 0, scale: 1 })
   const [pirateName, setPirateName] = useState('')
+  const [nameScale, setNameScale] = useState(1.0)
   const [isExporting, setIsExporting] = useState(false)
   const [showStamp, setShowStamp] = useState(false)
   const posterRef = useRef(null)
@@ -52,36 +53,37 @@ function App() {
     if (!posterRef.current) return
     setIsExporting(true)
     try {
-      await exportPoster(posterRef.current, pirateName, photo, photoPosition)
+      await exportPoster(posterRef.current, pirateName, photo, photoPosition, nameScale)
     } catch (err) {
       console.error('Export failed:', err)
       alert('Failed to export poster. Please try again.')
     } finally {
       setIsExporting(false)
     }
-  }, [pirateName, photo, photoPosition])
+  }, [pirateName, photo, photoPosition, nameScale])
 
   const handleReset = useCallback(() => {
     setPhoto(null)
     setPhotoPosition({ x: 0, y: 0, scale: 1 })
+    setNameScale(1.0)
     setAppState(APP_STATES.LANDING)
     setShowStamp(false)
   }, [])
 
   return (
-    <div className="min-h-dvh flex flex-col items-center px-3 py-4 sm:px-4 sm:py-6 md:py-10">
-      {/* Header */}
-      <header className="text-center mb-4 sm:mb-6 animate-fade-in">
-        <h1 className="font-[var(--font-poster)] text-xl sm:text-2xl md:text-3xl font-bold text-gold tracking-wider">
-          WANTED POSTER
-        </h1>
-        <p className="text-parchment-dark text-xs sm:text-sm mt-1 opacity-70">
-          Create your One Piece bounty poster
-        </p>
+    <div className="min-h-dvh flex flex-col items-center px-3.5 pt-5 pb-3 sm:px-5 sm:pt-8 md:px-8 md:pt-14">
+      {/* Header — Logo */}
+      <header className="mb-5 sm:mb-8 animate-fade-in">
+        <img
+          src="/images/one-piece-logo.png"
+          alt="One Piece"
+          className="h-8 sm:h-14 md:h-17 w-auto object-contain"
+          draggable={false}
+        />
       </header>
 
       {/* Main content */}
-      <main className="w-full max-w-md sm:max-w-lg flex flex-col items-center gap-4 sm:gap-6">
+      <main className="w-full max-w-sm sm:max-w-md md:max-w-lg flex flex-col items-center">
         {/* Poster preview */}
         <div
           className={`w-full ${showStamp ? 'animate-stamp' : ''}`}
@@ -92,24 +94,27 @@ function App() {
             photoPosition={photoPosition}
             onPhotoPositionChange={setPhotoPosition}
             pirateName={pirateName}
+            nameScale={nameScale}
             appState={appState}
           />
         </div>
 
         {/* Camera mode */}
         {appState === APP_STATES.CAMERA && (
-          <CameraCapture
-            onCapture={handlePhotoCapture}
-            onCancel={() => setAppState(APP_STATES.LANDING)}
-          />
+          <div className="w-full mt-3 sm:mt-5">
+            <CameraCapture
+              onCapture={handlePhotoCapture}
+              onCancel={() => setAppState(APP_STATES.LANDING)}
+            />
+          </div>
         )}
 
         {/* Landing buttons */}
         {appState === APP_STATES.LANDING && (
-          <div className="flex flex-col sm:flex-row gap-3 w-full animate-fade-in">
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full mt-3 sm:mt-5 animate-fade-in">
             <button
               onClick={() => setAppState(APP_STATES.CAMERA)}
-              className="btn-press flex-1 flex items-center justify-center gap-2 bg-gold hover:bg-gold-light text-navy font-semibold py-3 sm:py-3.5 px-5 sm:px-6 rounded-xl transition-all duration-200 shadow-lg shadow-gold/20"
+              className="btn-press flex-1 flex items-center justify-center gap-2 bg-gold hover:bg-gold-light text-navy font-semibold py-3 px-5 rounded-xl transition-all duration-200 shadow-lg shadow-gold/20"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/>
@@ -118,7 +123,7 @@ function App() {
               Take Photo
             </button>
 
-            <label className="btn-press flex-1 flex items-center justify-center gap-2 bg-navy-light hover:bg-[#252542] text-parchment font-semibold py-3 sm:py-3.5 px-5 sm:px-6 rounded-xl border border-gold/30 hover:border-gold/60 transition-all duration-200 cursor-pointer">
+            <label className="btn-press flex-1 flex items-center justify-center gap-2 bg-navy-light hover:bg-[#252542] text-parchment font-semibold py-3 px-5 rounded-xl border border-gold/30 hover:border-gold/60 transition-all duration-200 cursor-pointer">
               <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
                 <polyline points="17 8 12 3 7 8"/>
@@ -137,17 +142,19 @@ function App() {
 
         {/* Adjust mode: controls */}
         {appState === APP_STATES.ADJUST && (
-          <div className="w-full space-y-3 sm:space-y-4 animate-fade-in">
+          <div className="w-full mt-3 sm:mt-5 space-y-3 animate-fade-in">
             <Controls
               pirateName={pirateName}
               onNameChange={setPirateName}
+              nameScale={nameScale}
+              onNameScaleChange={setNameScale}
             />
 
-            <div className="flex flex-col sm:flex-row gap-3">
+            <div className="flex gap-2 sm:gap-3">
               <button
                 onClick={handleDownload}
                 disabled={isExporting}
-                className="btn-press flex-1 flex items-center justify-center gap-2 bg-gold hover:bg-gold-light text-navy font-bold py-3 sm:py-3.5 px-5 sm:px-6 rounded-xl transition-all duration-200 shadow-lg shadow-gold/20 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="btn-press flex-1 flex items-center justify-center gap-2 bg-gold hover:bg-gold-light text-navy font-bold py-3 px-5 rounded-xl transition-all duration-200 shadow-lg shadow-gold/20 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isExporting ? (
                   <>
@@ -171,7 +178,7 @@ function App() {
 
               <button
                 onClick={handleReset}
-                className="btn-press flex items-center justify-center gap-2 bg-navy-light hover:bg-[#252542] text-parchment font-semibold py-3 sm:py-3.5 px-5 sm:px-6 rounded-xl border border-red-500/30 hover:border-red-500/60 transition-all duration-200"
+                className="btn-press flex items-center justify-center gap-2 bg-navy-light hover:bg-[#252542] text-parchment font-semibold py-3 px-5 rounded-xl border border-red-500/30 hover:border-red-500/60 transition-all duration-200"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <polyline points="1 4 1 10 7 10"/>
@@ -185,7 +192,7 @@ function App() {
       </main>
 
       {/* Footer */}
-      <footer className="mt-auto pt-6 pb-3 text-center text-parchment-dark/40 text-xs">
+      <footer className="mt-auto pt-8 pb-2 text-center text-parchment-dark/40 text-xs">
         One Piece Wanted Poster Photobooth
       </footer>
     </div>

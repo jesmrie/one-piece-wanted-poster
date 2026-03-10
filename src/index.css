@@ -11,55 +11,103 @@
   --font-ui: 'DM Sans', sans-serif;
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+@layer base {
+  body {
+    font-family: var(--font-ui);
+    background-color: var(--color-navy);
+    color: var(--color-parchment);
+    min-height: 100dvh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 50%, rgba(212, 160, 23, 0.05) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 20%, rgba(240, 192, 64, 0.03) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 80%, rgba(212, 160, 23, 0.04) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  #root {
+    position: relative;
+    z-index: 1;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--color-navy);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-gold);
+    border-radius: 3px;
+  }
 }
 
-body {
-  font-family: var(--font-ui);
-  background-color: var(--color-navy);
-  color: var(--color-parchment);
-  min-height: 100dvh;
-  overflow-x: hidden;
-}
+@layer components {
+  .poster-name {
+    font-family: var(--font-poster);
+    font-weight: 400;
+    font-stretch: extra-condensed;
+    color: #1a1008;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
 
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background:
-    radial-gradient(ellipse at 20% 50%, rgba(212, 160, 23, 0.05) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 20%, rgba(240, 192, 64, 0.03) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 80%, rgba(212, 160, 23, 0.04) 0%, transparent 50%);
-  pointer-events: none;
-  z-index: 0;
-}
+  .animate-stamp {
+    animation: stamp 0.5s ease-out forwards;
+  }
 
-#root {
-  position: relative;
-  z-index: 1;
-}
+  .animate-fade-in {
+    animation: fadeIn 0.4s ease-out forwards;
+  }
 
-::-webkit-scrollbar {
-  width: 6px;
-}
-::-webkit-scrollbar-track {
-  background: var(--color-navy);
-}
-::-webkit-scrollbar-thumb {
-  background: var(--color-gold);
-  border-radius: 3px;
-}
+  .btn-press:active {
+    transform: scale(0.95);
+    transition: transform 0.1s;
+  }
 
-.poster-name {
-  font-family: var(--font-poster);
-  font-weight: 400;
-  font-stretch: extra-condensed;
-  color: #1a1008;
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
+  /* Range slider styling */
+  .name-size-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-gold);
+    cursor: pointer;
+    box-shadow: 0 0 6px rgba(212, 160, 23, 0.4);
+    transition: box-shadow 0.2s;
+  }
+  .name-size-slider::-webkit-slider-thumb:hover {
+    box-shadow: 0 0 10px rgba(212, 160, 23, 0.6);
+  }
+  .name-size-slider::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-gold);
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 0 6px rgba(212, 160, 23, 0.4);
+  }
+  .name-size-slider::-webkit-slider-runnable-track {
+    height: 6px;
+    border-radius: 3px;
+    background: var(--color-navy-light);
+    border: 1px solid rgba(212, 160, 23, 0.2);
+  }
+  .name-size-slider::-moz-range-track {
+    height: 6px;
+    border-radius: 3px;
+    background: var(--color-navy-light);
+    border: 1px solid rgba(212, 160, 23, 0.2);
+  }
 }
 
 @keyframes stamp {
@@ -72,26 +120,4 @@ body::before {
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
-}
-
-.animate-stamp {
-  animation: stamp 0.5s ease-out forwards;
-}
-
-.animate-fade-in {
-  animation: fadeIn 0.4s ease-out forwards;
-}
-
-.btn-press:active {
-  transform: scale(0.95);
-  transition: transform 0.1s;
-}
-
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-input[type="number"] {
-  -moz-appearance: textfield;
 }

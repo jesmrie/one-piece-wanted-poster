@@ -27,14 +27,19 @@ function loadImage(src) {
   })
 }
 
-export async function exportPoster(posterEl, pirateName, photoSrc, photoPosition) {
+// Format name: uppercase + replace spaces with bullet •
+function formatPirateName(name) {
+  return (name || 'YOUR NAME HERE').toUpperCase().replace(/\s+/g, '•')
+}
+
+export async function exportPoster(posterEl, pirateName, photoSrc, photoPosition, nameScale = 1.0) {
   const canvas = document.createElement('canvas')
   canvas.width = FRAME_W
   canvas.height = FRAME_H
   const ctx = canvas.getContext('2d')
 
   // 1. Draw the frame as the base layer
-  const frameImg = await loadImage('/wanted-poster-frame.png')
+  const frameImg = await loadImage('/images/wanted-poster-frame.png')
   ctx.drawImage(frameImg, 0, 0, FRAME_W, FRAME_H)
 
   // 2. Draw user's photo over the black rectangle
@@ -75,13 +80,21 @@ export async function exportPoster(posterEl, pirateName, photoSrc, photoPosition
     ctx.restore()
   }
 
-  // 3. Draw the pirate name
-  const nameText = (pirateName || 'YOUR NAME HERE').toUpperCase()
+  // 3. Draw texture overlay with darken blend mode
+  const textureImg = await loadImage('/images/texture-layer.png')
+  ctx.save()
+  ctx.globalCompositeOperation = 'darken'
+  ctx.drawImage(textureImg, 0, 0, FRAME_W, FRAME_H)
+  ctx.restore()
+
+  // 4. Draw the pirate name
+  const nameText = formatPirateName(pirateName)
   ctx.fillStyle = '#1a1008'
   ctx.textAlign = 'center'
   ctx.textBaseline = 'middle'
 
-  let nameFontSize = 72
+  const baseFontSize = Math.round(72 * nameScale)
+  let nameFontSize = baseFontSize
   ctx.font = `400 ${nameFontSize}px "Noto Serif Bengali"`
   while (ctx.measureText(nameText).width > NAME_AREA.width - 20 && nameFontSize > 20) {
     nameFontSize -= 2
@@ -92,7 +105,7 @@ export async function exportPoster(posterEl, pirateName, photoSrc, photoPosition
   const nameCenterY = NAME_AREA.top + NAME_AREA.height / 2
   ctx.fillText(nameText, nameCenterX, nameCenterY)
 
-  // 4. Export and download
+  // 5. Export and download
   const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/png'))
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
