@@ -93,7 +93,7 @@ export async function exportPoster(posterEl, pirateName, photoSrc, photoPosition
   ctx.textAlign = 'center'
   ctx.textBaseline = 'middle'
 
-  const baseFontSize = Math.round(72 * nameScale)
+  const baseFontSize = Math.round(96 * nameScale)
   let nameFontSize = baseFontSize
   ctx.font = `400 ${nameFontSize}px "Noto Serif Bengali"`
   while (ctx.measureText(nameText).width > NAME_AREA.width - 20 && nameFontSize > 20) {

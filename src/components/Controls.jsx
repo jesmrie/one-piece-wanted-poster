@@ -1,5 +1,5 @@
 export default function Controls({ pirateName, onNameChange, nameScale, onNameScaleChange }) {
-  const sizeLabel = nameScale <= 0.7 ? 'XS' : nameScale <= 0.9 ? 'S' : nameScale <= 1.1 ? 'M' : nameScale <= 1.3 ? 'L' : 'XL'
+  const sizeLabel = nameScale <= 0.7 ? 'XS' : nameScale <= 0.9 ? 'S' : nameScale <= 1.2 ? 'M' : nameScale <= 1.5 ? 'L' : 'XL'
 
   return (
     <div className="space-y-3">
@@ -36,7 +36,7 @@ export default function Controls({ pirateName, onNameChange, nameScale, onNameSc
           <input
             type="range"
             min="0.5"
-            max="1.5"
+            max="2.0"
             step="0.1"
             value={nameScale}
             onChange={(e) => onNameScaleChange(parseFloat(e.target.value))}

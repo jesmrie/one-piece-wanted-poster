@@ -75,9 +75,9 @@ function App() {
       {/* Header — Logo */}
       <header className="mb-5 sm:mb-8 animate-fade-in">
         <img
-          src="/images/one-piece-logo.png"
+          src="/images/one-piece-logo-white.png"
           alt="One Piece"
-          className="h-8 sm:h-14 md:h-17 w-auto object-contain"
+          className="h-12 sm:h-20 md:h-24 w-auto object-contain"
           draggable={false}
         />
       </header>
@@ -123,7 +123,7 @@ function App() {
               Take Photo
             </button>
 
-            <label className="btn-press flex-1 flex items-center justify-center gap-2 bg-navy-light hover:bg-[#252542] text-parchment font-semibold py-3 px-5 rounded-xl border border-gold/30 hover:border-gold/60 transition-all duration-200 cursor-pointer">
+            <label className="btn-press flex-1 flex items-center justify-center gap-2 bg-navy-light hover:bg-[#3a2815] text-parchment font-semibold py-3 px-5 rounded-xl border border-gold/30 hover:border-gold/60 transition-all duration-200 cursor-pointer">
               <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
                 <polyline points="17 8 12 3 7 8"/>
@@ -178,7 +178,7 @@ function App() {
 
               <button
                 onClick={handleReset}
-                className="btn-press flex items-center justify-center gap-2 bg-navy-light hover:bg-[#252542] text-parchment font-semibold py-3 px-5 rounded-xl border border-red-500/30 hover:border-red-500/60 transition-all duration-200"
+                className="btn-press flex items-center justify-center gap-2 bg-navy-light hover:bg-[#3a2815] text-parchment font-semibold py-3 px-5 rounded-xl border border-red-500/30 hover:border-red-500/60 transition-all duration-200"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <polyline points="1 4 1 10 7 10"/>
@@ -193,7 +193,15 @@ function App() {
 
       {/* Footer */}
       <footer className="mt-auto pt-8 pb-2 text-center text-parchment-dark/40 text-xs">
-        One Piece Wanted Poster Photobooth
+        One Piece Wanted Poster Photobooth by{' '}
+        <a
+          href="https://www.instagram.com/jes.logs"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-gold/60 hover:text-gold transition-colors"
+        >
+          @jes.logs
+        </a>
       </footer>
     </div>
   )

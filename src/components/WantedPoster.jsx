@@ -198,7 +198,7 @@ export default function WantedPoster({
         <span
           className="poster-name text-center leading-none w-full block truncate px-2"
           style={{
-            fontSize: `clamp(${0.7 * nameScale}rem, ${3.5 * nameScale}vw, ${1.8 * nameScale}rem)`,
+            fontSize: `clamp(${0.9 * nameScale}rem, ${4.5 * nameScale}vw, ${2.4 * nameScale}rem)`,
           }}
         >
           {formatPirateName(pirateName)}

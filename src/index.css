@@ -1,12 +1,12 @@
 @import "tailwindcss";
 
 @theme {
-  --color-navy: #0f0f23;
-  --color-navy-light: #1a1a2e;
-  --color-gold: #d4a017;
-  --color-gold-light: #f0c040;
-  --color-parchment: #f5f0e8;
-  --color-parchment-dark: #d4c9a8;
+  --color-navy: #1c1008;
+  --color-navy-light: #2a1b0e;
+  --color-gold: #c8902a;
+  --color-gold-light: #daa54a;
+  --color-parchment: #f5efe4;
+  --color-parchment-dark: #c4aa82;
   --font-poster: 'Noto Serif Bengali', serif;
   --font-ui: 'DM Sans', sans-serif;
 }
@@ -25,9 +25,9 @@
     position: fixed;
     inset: 0;
     background:
-      radial-gradient(ellipse at 20% 50%, rgba(212, 160, 23, 0.05) 0%, transparent 50%),
-      radial-gradient(ellipse at 80% 20%, rgba(240, 192, 64, 0.03) 0%, transparent 50%),
-      radial-gradient(ellipse at 50% 80%, rgba(212, 160, 23, 0.04) 0%, transparent 50%);
+      radial-gradient(ellipse at 20% 50%, rgba(200, 144, 42, 0.06) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 20%, rgba(160, 110, 40, 0.04) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 80%, rgba(200, 144, 42, 0.05) 0%, transparent 50%);
     pointer-events: none;
     z-index: 0;
   }
@@ -81,11 +81,11 @@
     border-radius: 50%;
     background: var(--color-gold);
     cursor: pointer;
-    box-shadow: 0 0 6px rgba(212, 160, 23, 0.4);
+    box-shadow: 0 0 6px rgba(200, 144, 42, 0.4);
     transition: box-shadow 0.2s;
   }
   .name-size-slider::-webkit-slider-thumb:hover {
-    box-shadow: 0 0 10px rgba(212, 160, 23, 0.6);
+    box-shadow: 0 0 10px rgba(200, 144, 42, 0.6);
   }
   .name-size-slider::-moz-range-thumb {
     width: 18px;
@@ -94,19 +94,19 @@
     background: var(--color-gold);
     cursor: pointer;
     border: none;
-    box-shadow: 0 0 6px rgba(212, 160, 23, 0.4);
+    box-shadow: 0 0 6px rgba(200, 144, 42, 0.4);
   }
   .name-size-slider::-webkit-slider-runnable-track {
     height: 6px;
     border-radius: 3px;
     background: var(--color-navy-light);
-    border: 1px solid rgba(212, 160, 23, 0.2);
+    border: 1px solid rgba(200, 144, 42, 0.2);
   }
   .name-size-slider::-moz-range-track {
     height: 6px;
     border-radius: 3px;
     background: var(--color-navy-light);
-    border: 1px solid rgba(212, 160, 23, 0.2);
+    border: 1px solid rgba(200, 144, 42, 0.2);
   }
 }
 
