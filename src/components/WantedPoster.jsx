@@ -35,6 +35,7 @@ export default function WantedPoster({
   const [isDragging, setIsDragging] = useState(false)
   const dragStart = useRef({ x: 0, y: 0, posX: 0, posY: 0 })
 
+  // --- Drag handling ---
   const handlePointerDown = useCallback((e) => {
     if (!photo) return
     e.preventDefault()
@@ -67,6 +68,7 @@ export default function WantedPoster({
     setIsDragging(false)
   }, [])
 
+  // --- Scroll zoom (desktop) ---
   const handleWheel = useCallback((e) => {
     if (!photo) return
     e.preventDefault()
@@ -77,6 +79,7 @@ export default function WantedPoster({
     }))
   }, [photo, onPhotoPositionChange])
 
+  // --- Pinch zoom (mobile) ---
   const lastPinchDist = useRef(null)
   const handleTouchMove = useCallback((e) => {
     if (e.touches.length === 2) {
@@ -103,108 +106,118 @@ export default function WantedPoster({
     setIsDragging(false)
   }, [])
 
+  // Register wheel and touch events with { passive: false } to allow preventDefault
   useEffect(() => {
     const el = photoAreaRef.current
     if (!el) return
     const opts = { passive: false }
     el.addEventListener('wheel', handleWheel, opts)
-    return () => el.removeEventListener('wheel', handleWheel, opts)
-  }, [handleWheel])
+    el.addEventListener('touchmove', handleTouchMove, opts)
+    return () => {
+      el.removeEventListener('wheel', handleWheel, opts)
+      el.removeEventListener('touchmove', handleTouchMove, opts)
+    }
+  }, [handleWheel, handleTouchMove])
 
   return (
-    <div
-      className="relative w-full mx-auto select-none"
-      style={{ aspectRatio: '1191 / 1684' }}
-      id="wanted-poster"
-    >
-      {/* Layer 1: Frame image (base) */}
-      <img
-        src="/images/wanted-poster-frame.png"
-        alt="Wanted poster frame"
-        className="absolute inset-0 w-full h-full pointer-events-none"
-        draggable={false}
-      />
-
-      {/* Layer 2: Photo - ON TOP of frame, covering the black rectangle */}
+    <>
+      {/* Poster */}
       <div
-        ref={photoAreaRef}
-        className="absolute overflow-hidden z-10"
-        style={{
-          top: `${PHOTO_AREA.top}%`,
-          left: `${PHOTO_AREA.left}%`,
-          width: `${PHOTO_AREA.width}%`,
-          height: `${PHOTO_AREA.height}%`,
-          cursor: photo ? (isDragging ? 'grabbing' : 'grab') : 'default',
-        }}
-        onMouseDown={handlePointerDown}
-        onMouseMove={handlePointerMove}
-        onMouseUp={handlePointerUp}
-        onMouseLeave={handlePointerUp}
-        onTouchStart={handlePointerDown}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
+        className="relative w-full mx-auto select-none"
+        style={{ aspectRatio: '1191 / 1684' }}
+        id="wanted-poster"
       >
-        {photo ? (
-          <img
-            src={photo}
-            alt="Your photo"
-            className="absolute w-full h-full object-cover pointer-events-none"
-            style={{
-              transform: `translate(${photoPosition.x}px, ${photoPosition.y}px) scale(${photoPosition.scale})`,
-            }}
-            draggable={false}
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center bg-[#1a1008]/90">
-            <div className="text-center text-[#c4b394] opacity-70">
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-10 h-10 md:w-14 md:h-14 mx-auto mb-2 opacity-50" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                <circle cx="8.5" cy="8.5" r="1.5"/>
-                <polyline points="21 15 16 10 5 21"/>
-              </svg>
-              <p className="text-xs md:text-sm font-medium">Your photo here</p>
-            </div>
-          </div>
-        )}
+        {/* Layer 1: Frame image (base) */}
+        <img
+          src="/images/wanted-poster-frame.png"
+          alt="Wanted poster frame"
+          className="absolute inset-0 w-full h-full pointer-events-none"
+          draggable={false}
+        />
 
-        {photo && appState === 'adjust' && (
-          <div className="absolute bottom-2 left-0 right-0 text-center pointer-events-none">
-            <span className="bg-black/60 text-white text-[10px] md:text-xs px-2.5 py-1 rounded-full">
-              Drag to reposition | Scroll to zoom
-            </span>
-          </div>
-        )}
-      </div>
-
-      {/* Layer 3: Texture overlay with darken blend mode */}
-      <img
-        src="/images/texture-layer.png"
-        alt=""
-        className="absolute inset-0 w-full h-full pointer-events-none z-15"
-        style={{ mixBlendMode: 'darken' }}
-        draggable={false}
-      />
-
-      {/* Layer 4: Name text overlay */}
-      <div
-        className="absolute flex items-center justify-center pointer-events-none z-30"
-        style={{
-          top: `${NAME_AREA.top}%`,
-          left: `${NAME_AREA.left}%`,
-          width: `${NAME_AREA.width}%`,
-          height: `${NAME_AREA.height}%`,
-        }}
-      >
-        <span
-          className="poster-name text-center leading-none w-full block truncate px-2"
+        {/* Layer 2: Photo - ON TOP of frame, covering the black rectangle */}
+        <div
+          ref={photoAreaRef}
+          className="absolute overflow-hidden z-10 touch-none"
           style={{
-            fontSize: `clamp(${0.9 * nameScale}rem, ${4.5 * nameScale}vw, ${2.4 * nameScale}rem)`,
+            top: `${PHOTO_AREA.top}%`,
+            left: `${PHOTO_AREA.left}%`,
+            width: `${PHOTO_AREA.width}%`,
+            height: `${PHOTO_AREA.height}%`,
+            cursor: photo ? (isDragging ? 'grabbing' : 'grab') : 'default',
+          }}
+          onMouseDown={handlePointerDown}
+          onMouseMove={handlePointerMove}
+          onMouseUp={handlePointerUp}
+          onMouseLeave={handlePointerUp}
+          onTouchStart={handlePointerDown}
+          onTouchEnd={handleTouchEnd}
+        >
+          {photo ? (
+            <img
+              src={photo}
+              alt="Your photo"
+              className="absolute w-full h-full object-cover pointer-events-none"
+              style={{
+                transform: `translate(${photoPosition.x}px, ${photoPosition.y}px) scale(${photoPosition.scale})`,
+              }}
+              draggable={false}
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center bg-[#1a1008]/90">
+              <div className="text-center text-[#c4b394] opacity-70">
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-10 h-10 md:w-14 md:h-14 mx-auto mb-2 opacity-50" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                  <circle cx="8.5" cy="8.5" r="1.5"/>
+                  <polyline points="21 15 16 10 5 21"/>
+                </svg>
+                <p className="text-xs md:text-sm font-medium">Your photo here</p>
+              </div>
+            </div>
+          )}
+
+          {photo && appState === 'adjust' && (
+            <div className="absolute bottom-2 left-0 right-0 text-center pointer-events-none">
+              <span className="bg-black/60 text-white text-[10px] md:text-xs px-2.5 py-1 rounded-full hidden md:inline">
+                Drag to reposition · Scroll to zoom
+              </span>
+              <span className="bg-black/60 text-white text-[10px] md:text-xs px-2.5 py-1 rounded-full md:hidden">
+                Drag to reposition · Pinch to zoom
+              </span>
+            </div>
+          )}
+        </div>
+
+        {/* Layer 3: Texture overlay with darken blend mode */}
+        <img
+          src="/images/texture-layer.png"
+          alt=""
+          className="absolute inset-0 w-full h-full pointer-events-none z-15"
+          style={{ mixBlendMode: 'darken' }}
+          draggable={false}
+        />
+
+        {/* Layer 4: Name text overlay */}
+        <div
+          className="absolute flex items-center justify-center pointer-events-none z-30"
+          style={{
+            top: `${NAME_AREA.top}%`,
+            left: `${NAME_AREA.left}%`,
+            width: `${NAME_AREA.width}%`,
+            height: `${NAME_AREA.height}%`,
           }}
         >
-          {formatPirateName(pirateName)}
-        </span>
+          <span
+            className="poster-name text-center leading-none w-full block truncate px-2"
+            style={{
+              fontSize: `clamp(${0.9 * nameScale}rem, ${4.5 * nameScale}vw, ${2.4 * nameScale}rem)`,
+            }}
+          >
+            {formatPirateName(pirateName)}
+          </span>
+        </div>
       </div>
 
-    </div>
+    </>
   )
 }
